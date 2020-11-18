@@ -10,9 +10,9 @@ Netflix famously sponsored a competition, offering a grand prize of $1,000,000 t
 
 Context cannot be taken lightly for recommender system, for instance think you visited a hotel during summers which had everything great but their Air Conditioners were not working then you will leave a bad rating for place but if you had visited the same hotel during winters the AC wouldn’t have mattered a would have gotten a great rating . 
 
-## Installation
+## 🚀&nbsp; Installation
 
-### Installing Required Files 
+###  Installing Required Files 
 ```bash
 git clone https://github.com/yadavgaurav251/Context-Aware-Recommender.git
 cd Context-Aware-Recommender/
@@ -31,7 +31,7 @@ python manage.py runserver
 
 ![graph](https://github.com/yadavgaurav251/Context-Aware-Recommender/blob/main/Docs/Assets/plan-2.png)
 
-## Features
+## ✅ Features
 
 - [x] Content Based Recommender
 - [x] Collaborative Filtering Recommender System
@@ -41,4 +41,9 @@ python manage.py runserver
 - [x] Django Based Interface
 - [ ] Integrating Django and Recommender System 
 
+## 🤝&nbsp; Found a bug? Missing a specific feature?
 
+Feel free to **file a new issue** with a respective title and description on the the   [yadavgaurav251/Context-Aware-Recommender](https://github.com/yadavgaurav251/Context-Aware-Recommender) repository. If you already found a solution to your problem, **we would love to review your pull request**! 
+
+## 📘&nbsp; License
+The Sulu content management system is released under the under terms of the [MIT License](LICENSE).
