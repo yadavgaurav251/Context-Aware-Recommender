@@ -1,6 +1,6 @@
 # Context-Aware-Recommender
 
-## Motivation
+## ⛳️&nbsp; Motivation
 > “If a person is presented with too many options, they are less likely to buy.”
 
 On the Internet, where the number of choices is overwhelming, there is need to filter, prioritize and efficiently deliver relevant information. Recommender systems help drive user engagement on platforms by generating personalized recommendations based on a user’s past behaviour.
@@ -27,11 +27,11 @@ python manage.py runserver
 
 ```
 
-## Project Design and Diagram:
+## 📖&nbsp; Project Design and Diagram:
 
 ![graph](https://github.com/yadavgaurav251/Context-Aware-Recommender/blob/main/Docs/Assets/plan-2.png)
 
-## ✅ Features
+## 🛠&nbsp; Features
 
 - [x] Content Based Recommender
 - [x] Collaborative Filtering Recommender System
@@ -46,4 +46,4 @@ python manage.py runserver
 Feel free to **file a new issue** with a respective title and description on the the   [yadavgaurav251/Context-Aware-Recommender](https://github.com/yadavgaurav251/Context-Aware-Recommender) repository. If you already found a solution to your problem, **we would love to review your pull request**! 
 
 ## 📘&nbsp; License
-The Sulu content management system is released under the under terms of the [MIT License](LICENSE).
+The Project is released under the under terms of the [MIT License](LICENSE).
