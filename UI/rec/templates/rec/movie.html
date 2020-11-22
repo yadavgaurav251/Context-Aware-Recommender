@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+        function get_url(id) {
+            return "https://api.themoviedb.org/3/movie/"+id+"?api_key=54eb7099be5f1c47fa34c50df79203d1&language=en-US";
+            console.log("Ok1");
+        }
+        function add_movie2(id) {
+            $.getJSON(get_url(id), function(m) {
+                recs = document.getElementById('movie2');
+                image_url = 'http://image.tmdb.org/t/p/w500/' + m.poster_path;
+
+                img = document.createElement('img');
+                img.setAttribute('src',image_url);
+                img.setAttribute('style','width:100%; height:100%;');
+                img.setAttribute('src',image_url);
+                
+                recs.appendChild(img);
+
+                recs.setAttribute('class','card');
+                console.log(m);     
+            })
+        }
+
+        function add_movie_info(id)
+        {
+            $.getJSON(get_url(id), function(m)
+            {
+                info = document.getElementById('movie_info')
+                
+                div1 = document.createElement('div')
+                div1.innerHTML = m.title;
+
+                info.appendChild(div1)
+
+                div2 = document.createElement('div')
+                div2.innerHTML = "Release Date: " + m.release_date + " | Runtime: " + m.runtime+" min";
+
+                info.appendChild(div2);
+
+                
+            })
+
+        }
+    </script>
+    <style>
+        body
+        {
+            margin:0;
+        }
+        .header
+        {
+            width:100%;
+            background-color:#047aed;
+            color:white;
+            text-align: center;
+            font-size: 2.25rem;
+            padding-top:20px;
+            padding-bottom:20px;
+            height:fit-content;
+            box-shadow:0px 1px 10px black;
+        }
+        #title
+        {
+            padding-bottom:1px;
+            border-bottom: 3px solid white;
+        } 
+        .body
+        {
+            position: relative;
+            width:100%;
+            height:200px;
+            padding-top:50px;
+            background-color: #047aed;
+        }
+        .content
+        {
+            max-width:1300px;
+            margin:auto;
+        }
+        .card
+        {
+            margin-left:20px;
+            margin-top:40px;
+            float: left;
+            display: inline;
+            background-color: white;
+            width:300px;
+            height:400px;
+            padding:3px;
+            border-radius:5px;
+            box-shadow: 0 0 10px black ;
+            z-index:100;
+        }
+        .card:hover
+        {
+            transform:scale(1.05);
+            transition:500ms;
+        }
+        .card2
+        {
+            margin-left:auto;
+            margin-right: auto;
+            margin-top: 50px;
+            background-color: white;
+            width:85%;
+            height:500px;
+            padding:3px;
+            border-radius:5px;
+            box-shadow: 0 0 10px black ;
+            z-index:-1;
+        }
+        .body::before,
+        .body::after
+        {
+            width: 100%;
+            content: "";
+            position: absolute;
+            margin-top:-400px;
+            right:0;
+            left:0;
+            transform:skewY(-3deg);  
+            background-color: #047aed;
+            height:100px;
+            z-index:-1;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <span id='title'>Contextual Recommendation System</span>
+    </div>
+    <div class="body">
+        <div class="content">
+            <div class=card2>
+                <div id="movie2">
+                    <script>add_movie2({{ id }});</script>
+                </div>
+                <div id="movie_info">
+                    <script>add_movie_info({{ id }});</script>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

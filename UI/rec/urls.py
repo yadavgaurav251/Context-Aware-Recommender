@@ -3,7 +3,5 @@ from .import views
 
 urlpatterns = [
     path('', views.index, name = 'index'),
-    path('submit/', views.submit, name='submit'),
-
-
+    path('<int:id>', views.movie, name='movie')
 ]
