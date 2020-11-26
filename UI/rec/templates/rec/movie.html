@@ -12,17 +12,17 @@
         }
         function add_movie2(id) {
             $.getJSON(get_url(id), function(m) {
-                recs = document.getElementById('movie2');
+                recs = document.getElementById('card2');
+                div = document.createElement('div');
+
                 image_url = 'http://image.tmdb.org/t/p/w500/' + m.poster_path;
 
                 img = document.createElement('img');
                 img.setAttribute('src',image_url);
-                img.setAttribute('style','width:100%; height:100%;');
-                img.setAttribute('src',image_url);
-                
-                recs.appendChild(img);
-
-                recs.setAttribute('class','card');
+                img.setAttribute('style','width:350px;height:500px;');
+                img.setAttribute('class','card');
+                div.appendChild(img);
+                recs.appendChild(div);
                 console.log(m);     
             })
         }
@@ -31,18 +31,64 @@
         {
             $.getJSON(get_url(id), function(m)
             {
-                info = document.getElementById('movie_info')
+                info = document.getElementById('card2')
                 
                 div1 = document.createElement('div')
+                div1.setAttribute('class','movie-title')
                 div1.innerHTML = m.title;
 
                 info.appendChild(div1)
 
                 div2 = document.createElement('div')
-                div2.innerHTML = "Release Date: " + m.release_date + " | Runtime: " + m.runtime+" min";
+                div3 = document.createElement('div')
+                div2.setAttribute('class','secondary_info');
+                div3.setAttribute('class','secondary_info');
+                div2.innerHTML = "<b>Release Date</b>:" + m.release_date ;
+                
+                div8 = document.createElement('div')
+                div8.setAttribute('class', 'secondary_info');
+                div8.innerHTML = "<b>Runtime</b>:" + m.runtime+" min";
 
                 info.appendChild(div2);
+                info.appendChild(div8);
 
+                let x="";
+                for (let i=0;i<(m.genres.length && 2) ;i++){
+                    x = x + m.genres[i].name + ' | '
+                }
+                div3.innerHTML = '<b>Genre</b> : ' + x; 
+
+                info.appendChild(div3)
+
+                div4 = document.createElement('div');
+                div4.setAttribute('class', 'secondary_info');
+                div4.innerHTML = "<b>Language: </b>" + m.spoken_languages[0].english_name;
+
+                info.appendChild(div4);
+
+                div5 = document.createElement('div');
+                div5.setAttribute('class', 'secondary_info')
+                div5.innerHTML = '<b>Tagline</b> : '+m.tagline;
+
+                info.appendChild(div5);
+
+                div6 = document.createElement('div')
+                div6.setAttribute('class','secondary_info')
+                div6.innerHTML = '<b>Vote Average</b> : '+m.vote_average;
+
+                info.appendChild(div6);
+
+                div7 = document.createElement('div')
+                div7.setAttribute('class', 'secondary_info')
+                div7.innerHTML = '<b>Vote Count:</b>' + m.vote_count;
+
+                info.appendChild(div7)
+
+                p = document.createElement('p');
+                p.setAttribute('class', 'secondary_info')
+                p.setAttribute('style','width:900px;')
+                p.innerHTML = "<div><b>Overview</b>:</div>"+ m.overview;
+                info.appendChild(p)
                 
             })
 
@@ -64,6 +110,7 @@
             padding-bottom:20px;
             height:fit-content;
             box-shadow:0px 1px 10px black;
+            position: relative;
         }
         #title
         {
@@ -85,13 +132,14 @@
         }
         .card
         {
+            margin:40px;
             margin-left:20px;
-            margin-top:40px;
+            margin-right:25px;
             float: left;
             display: inline;
             background-color: white;
-            width:300px;
-            height:400px;
+            width:50%;
+            height:30%;
             padding:3px;
             border-radius:5px;
             box-shadow: 0 0 10px black ;
@@ -99,21 +147,20 @@
         }
         .card:hover
         {
-            transform:scale(1.05);
+            transform:scale(0.98);
             transition:500ms;
         }
-        .card2
+        #card2
         {
-            margin-left:auto;
-            margin-right: auto;
-            margin-top: 50px;
+            margin:auto;
             background-color: white;
             width:85%;
-            height:500px;
+            height:550px;
             padding:3px;
             border-radius:5px;
             box-shadow: 0 0 10px black ;
             z-index:-1;
+            padding-bottom:30px;
         }
         .body::before,
         .body::after
@@ -121,13 +168,33 @@
             width: 100%;
             content: "";
             position: absolute;
-            margin-top:-400px;
+            margin-top:-425px;
             right:0;
             left:0;
             transform:skewY(-3deg);  
             background-color: #047aed;
             height:100px;
             z-index:-1;
+        }
+
+
+
+        /*Movie-Info Column*/
+        #movie_info
+        {
+            padding:10px;
+            float:left;
+        }
+        .movie-title
+        {
+            font-size: 4rem;
+            margin-bottom: 10px;
+        }
+
+        .secondary_info{
+            font-size: 1.01rem;
+            margin-bottom:5px;
+            padding-left:10px;
         }
     </style>
 </head>
@@ -137,13 +204,9 @@
     </div>
     <div class="body">
         <div class="content">
-            <div class=card2>
-                <div id="movie2">
-                    <script>add_movie2({{ id }});</script>
-                </div>
-                <div id="movie_info">
-                    <script>add_movie_info({{ id }});</script>
-                </div>
+            <div id='card2'>
+                <script>add_movie2({{ id }});</script>
+                <script>add_movie_info({{ id }});</script>
             </div>
         </div>
     </div>
