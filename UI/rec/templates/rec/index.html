@@ -20,8 +20,8 @@
                 image_url = 'http://image.tmdb.org/t/p/w500/' + m.poster_path;
                 console.log("ok2");
                 rec_div = document.createElement('div');
-                rec_div.setAttribute("style","display:inline-block;width:18rem;margin:10px;")
-                rec_div.setAttribute("class", "image-responsive")
+                rec_div.setAttribute("style","display:inline-block;width:19rem;margin:10px;padding:5px;")
+                rec_div.setAttribute("class", "image-responsive image-card")
 
                 a = document.createElement('a');
                 a.setAttribute('href', '' + mov[0]);
@@ -77,6 +77,12 @@
             padding-top:5px;
             padding-bottom:10px;
             height:fit-content;
+        }
+        .image-card:hover{
+            transform:scale(0.98);
+            transition: 500ms;
+            box-shadow: 0 0 5px rgba(0,0,0,0.3);
+            background-color: rgba(0,0,0,0.1);
         }
         #title
         {
@@ -134,7 +140,9 @@
             transform : scale(0.98);
         }
 
-
+        img{
+            margin-bottom:5px;
+        }
 
         .image-container
         {
@@ -147,10 +155,6 @@
             padding:auto;
             width:100%;
             display: {{ display_rec }};
-        }
-        img
-        {
-            margin:10px;
         }
         
     </style>
