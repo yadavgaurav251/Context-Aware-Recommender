@@ -43,26 +43,22 @@
                 div3 = document.createElement('div')
                 div2.setAttribute('class','secondary_info');
                 div3.setAttribute('class','secondary_info');
-                div2.innerHTML = "<b>Release Date</b>:" + m.release_date ;
+                div2.innerHTML = "<b>Release Date</b> : " + m.release_date ;
                 
                 div8 = document.createElement('div')
                 div8.setAttribute('class', 'secondary_info');
-                div8.innerHTML = "<b>Runtime</b>:" + m.runtime+" min";
+                div8.innerHTML = "<b>Runtime</b> : " + m.runtime+" min";
 
                 info.appendChild(div2);
                 info.appendChild(div8);
 
-                let x="";
-                for (let i=0;i<(m.genres.length && 2) ;i++){
-                    x = x + m.genres[i].name + ' | '
-                }
-                div3.innerHTML = '<b>Genre</b> : ' + x; 
+                div3.innerHTML = '<b>Genre</b> : ' + m.genres[0].name; 
 
                 info.appendChild(div3)
 
                 div4 = document.createElement('div');
                 div4.setAttribute('class', 'secondary_info');
-                div4.innerHTML = "<b>Language: </b>" + m.spoken_languages[0].english_name;
+                div4.innerHTML = "<b>Language : </b>" + m.spoken_languages[0].english_name;
 
                 info.appendChild(div4);
 
@@ -80,7 +76,7 @@
 
                 div7 = document.createElement('div')
                 div7.setAttribute('class', 'secondary_info')
-                div7.innerHTML = '<b>Vote Count:</b>' + m.vote_count;
+                div7.innerHTML = '<b>Vote Count : </b>' + m.vote_count;
 
                 info.appendChild(div7)
 
@@ -187,6 +183,7 @@
         }
         .movie-title
         {
+            margin-top:25px;
             font-size: 4rem;
             margin-bottom: 10px;
         }

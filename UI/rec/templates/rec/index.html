@@ -8,6 +8,9 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script>    
 
+        
+
+
         function get_url(id) {
             return "https://api.themoviedb.org/3/movie/"+id+"?api_key=54eb7099be5f1c47fa34c50df79203d1&language=en-US";
             console.log("Ok1");
@@ -156,7 +159,72 @@
             width:100%;
             display: {{ display_rec }};
         }
+        /* .contextual
+        {
+            display:None;
+        } */
         
+        .switch {
+  position: relative;
+  display: inline-block;
+  width: 40px;
+  height: 24px;
+}
+
+.switch input { 
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 16px;
+  width: 16px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+input:checked + .slider {
+  background-color: #2196F3;
+}
+
+input:focus + .slider {
+  box-shadow: 0 0 1px #2196F3;
+}
+
+input:checked + .slider:before {
+  -webkit-transform: translateX(16px);
+  -ms-transform: translateX(16px);
+  transform: translateX(16px);
+}
+
+/* Rounded sliders */
+.slider.round {
+  border-radius: 34px;
+}
+
+.slider.round:before {
+  border-radius: 50%;
+}
+
+
     </style>
     </head>
 <body>
@@ -170,18 +238,26 @@
                 <fieldset name="choice">
                     <label class="label">Would You like to get Contextual Recommendation?</label>
                     <br>
-                    <input class="radio-label" type="radio" name="choice" value="Yes" required> Yes
+                    <input class="radio-label" type="radio" name="choice" value="Yes"  required> Yes
                     <input class="radio-label" type="radio" name="choice" value="No" required> No
                 </fieldset>  
                 <input type="text" name="movie" required placeholder="Enter a Movie You like">
                 <br>
-                <input type="number" name="num_of_movie" required placeholder="Enter a Number">
+                <input type="number" name="user_Id" required placeholder="Enter you UserID">
+                <input class="contextual" type="number" name="number_of_people" required placeholder="Number of People Watching the Movie-:">
+                
+                    <label class="contextual" style="margin-top:20px;">Watching with your family?
+                        <label class="switch">
+                        <input type="checkbox" name="family[]" style="margin-left:10px" value="Yes">
+                        <span class="slider round"></span>
+                        </label>
+                    </label>
 
-                <fieldset name="device-size" class="contextual">
-                    <label class="label">Choose the size of the device-:</label><br>
-                    <input class="radio-label" type="radio" name="device-size" value="small" required> Small
-                    <input class="radio-label" type="radio" name="device-size" value="medium"> Medium
-                    <input class="radio-label" type="radio" name="device-size" value="large"> Large
+                <fieldset name="device-type" class="contextual">
+                    <label class="label">Choose the Type of Device-:</label><br>
+                    <input class="radio-label" type="radio" name="device-type" value="Mobile" required> Mobile
+                    <input class="radio-label" type="radio" name="device-type" value="Tablet">  Tablet
+                    <input class="radio-label" type="radio" name="device-type" value="TV/Laptop"> TV/Laptop
                 </fieldset>
                 <fieldset name="mood" class="contextual">
                     <label class="label">Choose Your mood-:</label><br>
@@ -200,5 +276,30 @@
             {% endfor %}
         {% endif %}
     </div>
+
+
+    <!-- <script>
+        y = document.getElementsByClassName('contextual');
+        console.log(y.length);
+        for(i=0;i<y.length;i++)
+        {
+            console.log(y[i])
+            console.log("Hello")
+        }
+        
+        document.querySelectorAll('input[name="choice"]').forEach(elem => {
+        elem.addEventListener('change', function(event){
+            console.log(event.target.value);
+            x = event.target.value;
+            if ( x=="Yes")
+            {   
+                y.style.display = "Block";
+            }
+            else{
+                y.style.display = "None";
+            }
+            });
+        }); -->
+    </script>
     </body>
 </html>
