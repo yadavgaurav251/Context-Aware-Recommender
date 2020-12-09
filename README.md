@@ -39,7 +39,7 @@ python manage.py runserver
 - [x] Context-Aware Recommender System
 - [x] Merging Hybrid And Context-Aware Recommender System
 - [x] Django Based Interface
-- [ ] Integrating Django and Recommender System 
+- [x] Integrating Django and Recommender System 
 
 ## 🤝&nbsp; Found a bug? Missing a specific feature?
 
