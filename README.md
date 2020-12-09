@@ -30,7 +30,7 @@ python manage.py runserver
 
 Movie Recommendation on Independence Day - 
 
-![Recommendation on Independence Day](https://github.com/yadavgaurav251/Context-Aware-Recommender/blob/main/Docs/Assets/screenshot.jpg)
+![Recommendation on Independence Day](https://github.com/yadavgaurav251/Context-Aware-Recommender/blob/main/Docs/Assets/screenshot_batman.jpg)
 
 ## 📖&nbsp; Project Design and Diagram:
 
