@@ -13,7 +13,6 @@
 
         function get_url(id) {
             return "https://api.themoviedb.org/3/movie/"+id+"?api_key=54eb7099be5f1c47fa34c50df79203d1&language=en-US";
-            console.log("Ok1");
         }
 
         
@@ -38,11 +37,11 @@
                 title.setAttribute("class","card-title")
 
                 span = document.createElement("span");
-                if(mov[1]>=90)
+                if(mov[1]>=85)
                 {
                     span.setAttribute("class","badge badge-pill badge-success");
                 }
-                else if (mov[1]>=75){
+                else if (mov[1]>=70){
                     span.setAttribute("class","badge badge-pill badge-warning");
                 } 
                 else 
@@ -265,6 +264,7 @@ input:checked + .slider:before {
                     <input class="radio-label" type="radio" name="mood" value="neutral" neutral> Neutral
                     <input class="radio-label" type="radio" name="mood" value="sad"> Sad
                 </fieldset>
+                <input type="date" name="date" style="margin-top:20px; margin-bottom:15px;" required><br>
                 <input style="margin-top:10px;" type="submit" value="Submit" class="btn-btn btn btn-primary">
             </form>
         </div>
@@ -273,6 +273,7 @@ input:checked + .slider:before {
         {% if movies_id %}
             {% for mov in movies_id %}
                 <script>add_movie({{ mov }});</script>
+                <script>setInterval(function(){},1000);</script>
             {% endfor %}
         {% endif %}
     </div>
