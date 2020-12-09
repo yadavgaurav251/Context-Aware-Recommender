@@ -26,10 +26,17 @@ cd Context-Aware-Recommender/UI/
 python manage.py runserver
 
 ```
+## Screenshots
+
+Movie Recommendation on Independence Day - 
+
+![Recommendation on Independence Day](https://github.com/yadavgaurav251/Context-Aware-Recommender/blob/main/Docs/Assets/screenshot.jpg)
 
 ## 📖&nbsp; Project Design and Diagram:
 
+
 ![graph](https://github.com/yadavgaurav251/Context-Aware-Recommender/blob/main/Docs/Assets/plan-2.png)
+
 
 ## 🛠&nbsp; Features
 
