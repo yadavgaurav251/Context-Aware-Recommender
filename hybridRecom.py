@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[2]:
+# In[1]:
 
 
 import numpy as np
@@ -18,23 +18,22 @@ from datetime import datetime
 print("Import Success")
 
 
-# In[3]:
+# In[2]:
 
 
-# The main Movies Metadata file
 meta = pd.read_csv('Dataset/movies_metadata.csv')
 meta.head()
 
 
-# In[4]:
+# In[3]:
 
 
 # Rating
 ratings = pd.read_csv('Dataset/ratings_small.csv')
-ratings.head() # Movies in this dataset are rated out of 5 instead of 10
+ratings.head()
 
 
-# In[5]:
+# In[4]:
 
 
 #Links of IMDb and TMDb
@@ -42,140 +41,113 @@ links = pd.read_csv('Dataset/links_small.csv')
 links.head()
 
 
-# In[6]:
+# In[5]:
 
 
 keywords = pd.read_csv('Dataset/keywords.csv')
 keywords.head()
 
 
+# In[6]:
+
+
+# Content based Recommender System
+
+meta['overview'] = meta['overview'].fillna('')
+meta['overview'].head()
+
+
 # In[7]:
 
 
-# -- Content-focused recommender --
-
-meta['overview'] = meta['overview'].fillna('')
-meta['overview'].head() # Sample descriptions
+pd.DataFrame({'feature':meta.dtypes.index, 'dtype':meta.dtypes.values})
 
 
 # In[8]:
 
 
-# Check the datatype of "id" in movies_metadata.csv
-pd.DataFrame({'feature':meta.dtypes.index, 'dtype':meta.dtypes.values})
+meta = meta.drop([19730, 29503, 35587]) # Remove these ids to solve ValueError: "Unable to parse string..."
+
+meta['id'] = pd.to_numeric(meta['id'])
 
 
 # In[9]:
 
 
-meta = meta.drop([19730, 29503, 35587]) # Remove these ids to solve ValueError: "Unable to parse string..."
-
-# Convert object to int64 for compatibility during merging
-meta['id'] = pd.to_numeric(meta['id'])
-
-# Run  the following code for converting more than one value to integer
-# def convert_int(x):
-#     try:
-#         return int(x)
-#     except:
-#         return np.nan
+pd.DataFrame({'feature':links.dtypes.index, 'dtype':links.dtypes.values})
 
 
 # In[10]:
 
 
-# Check the datatype of "tmdbId" in links_small.csv
-pd.DataFrame({'feature':links.dtypes.index, 'dtype':links.dtypes.values})
+col=np.array(links['tmdbId'], np.int64)
+links['tmdbId']=col
 
 
 # In[11]:
 
 
-# Convert float64 to int64
-col=np.array(links['tmdbId'], np.int64)
-links['tmdbId']=col
-
-
-# In[12]:
-
-
-# Merge the dataframes on column "tmdbId"
 meta.rename(columns={'id':'tmdbId'}, inplace=True)
 meta = pd.merge(meta,links,on='tmdbId')
 meta.drop(['imdb_id'], axis=1, inplace=True)
 meta.head()
 
-# Alternatively, run the following code to reduce the size of movies_metadata.csv to match links_small.csv
-# meta = meta[meta['tmdbId'].isin(links)]
-# meta.shape
+
+# In[12]:
+
+
+tfidf = TfidfVectorizer(stop_words='english')
+
+
+# Constructing  matrix TF-IDF
+tfidf_matrix = tfidf.fit_transform(meta['overview'])
+tfidf_matrix.shape
 
 
 # In[13]:
 
 
-# Remove stop words and use TF-IDF vectorizer
-tfidf = TfidfVectorizer(stop_words='english')
-# Construct TF-IDF matrix
-tfidf_matrix = tfidf.fit_transform(meta['overview'])
-tfidf_matrix.shape
+cosine_sim = linear_kernel(tfidf_matrix, tfidf_matrix)
+indices = pd.Series(meta.index, index=meta['original_title']).drop_duplicates()
 
 
 # In[14]:
 
 
-# Compute cosine similarity
-cosine_sim = linear_kernel(tfidf_matrix, tfidf_matrix)
-# Get corresponding indices of the movies
-indices = pd.Series(meta.index, index=meta['original_title']).drop_duplicates()
-
-
-# In[15]:
-
-
-# Recommendation function
 def recommend(title, cosine_sim=cosine_sim):
 
-    # Get the index of the movie that matches the title
     idx = indices[title]
-    # Get the pairwise similarity scores of all movies with the given movie
     sim_scores = list(enumerate(cosine_sim[idx]))
-    # Sort the movies based on the similarity scores
     sim_scores = sorted(sim_scores, key=lambda x: x[1], reverse=True)
-    # Get the scores of the 15 most similar movies
     sim_scores = sim_scores[1:16]
-    # Get the movie indices
     movie_indices = [i[0] for i in sim_scores]
-    # Remove low-rated movies or outliers
     for i in movie_indices:
         pop = meta.at[i,'vote_average']
         if pop<5 or pop>10:
             movie_indices.remove(i)
 
-    # Return the most similar movies qualifying the 5.0 rating threshold
     return meta[['original_title','vote_average']].iloc[movie_indices]
 
 
-# In[16]:
+# In[15]:
 
 
 recommend('Iron Man')
 
 
-# In[17]:
+# In[16]:
 
 
-# -- User-focused recommender --
 
-reader = Reader() # Used to parse a file containing ratings
+reader = Reader() 
 df = Dataset.load_from_df(ratings[['userId', 'movieId', 'rating']], reader)
 kf = KFold(n_splits=5)
-kf.split(df) # Split the data into folds
+kf.split(df) 
 
 
-# In[18]:
+# In[ ]:
 
 
-# Use Single Value Decomposition (SVD) for cross-validation and fitting
 svd = SVD()
 cross_validate(svd, df, measures=['RMSE', 'MAE'])
 
@@ -183,57 +155,54 @@ trainset = df.build_full_trainset()
 svd.fit(trainset)
 
 
-# In[19]:
+# In[ ]:
 
 
-# Check a random user's ratings
 ratings[ratings['userId'] == 10]
 
 
-# In[20]:
+# In[ ]:
 
 
-# Read the smaller links file again
+# smaller link file reload 
 links_df = pd.read_csv('Dataset/links_small.csv')
 col=np.array(links_df['tmdbId'], np.int64)
 links_df['tmdbId']=col
 
-# Merge movies_metadata.csv and links_small.csv files
 links_df = links_df.merge(meta[['title', 'tmdbId']], on='tmdbId').set_index('title')
-links_index = links_df.set_index('tmdbId') # For label indexing
+links_index = links_df.set_index('tmdbId') 
 
 
-# In[21]:
+# In[ ]:
 
 
-# Recommendation function
 def hybrid(userId, title):
     idx = indices[title]
     tmdbId = links_df.loc[title]['tmdbId'] # Get the corresponding tmdb id
     
     sim_scores = list(enumerate(cosine_sim[idx]))
     sim_scores = sorted(sim_scores, key=lambda x: x[1], reverse=True)
-    sim_scores = sim_scores[1:31] # Scores of the 30 most similar movies
+    sim_scores = sim_scores[1:31] # Scores of 30 similar movies
     movie_indices = [i[0] for i in sim_scores]
     
     movies = meta.iloc[movie_indices][['title', 'vote_average', 'tmdbId']]
     movies['est'] = movies['tmdbId'].apply(lambda x: svd.predict(userId, links_index.loc[x]['movieId']).est) # Estimated prediction using svd
     movies = movies.sort_values('est', ascending=False) # Rank movies according to the predicted values
     movies.columns = ['Title', 'Vote Average', 'TMDb Id', 'Estimated Prediction']
-    return movies.head(30) # Display top 15 similar movies
+    return movies.head(30) # Display top 30 recommended movies
 
 
-# In[22]:
+# In[ ]:
 
 
 hybrid(30,'The Conjuring')
 
-result = hybrid(10,'Iron Man')
+result = hybrid(30,'Batman Begins')
 print("data getting passed in contextual")
 print(result)
 
 
-# In[23]:
+# In[ ]:
 
 
 # necessary functions for contextual_update function
@@ -279,7 +248,7 @@ def is_weekend():
 season()
 
 
-# In[24]:
+# In[ ]:
 
 
 # Function to include movies on specific dates -
@@ -295,7 +264,9 @@ def special_date(recommended_list,date_passed):
         new_movie = pd.DataFrame({"Title":["Border","Uri:The Surgical Strike"],
                                   "Vote Average":[6.8,7.1],
                                   "TMDb Id":[33125,554600],
-                                  "Estimated Prediction":[5.0,5.0]
+                                  "Estimated Prediction":[5.0,5.0],
+                                  "tmdbId":[33125,554600],
+                                  "genres":["[{'name':'Action'},{'name':'History'},{'name':'War'}]","[{'name':'Action'},{'name':'Drama'},{'name':'War'}]"]
                                   })
         new_list = pd.concat([new_movie,recommended_list])
     #Repubic Day
@@ -304,16 +275,20 @@ def special_date(recommended_list,date_passed):
         new_movie = pd.DataFrame({"Title":["Shaheed","Border","Uri:The Surgical Strike"],
                                   "Vote Average":[5.0,6.8,7.1],
                                   "TMDb Id":[498713,33125,554600],
-                                  "Estimated Prediction":[5.0,5.0,5.0]
+                                  "Estimated Prediction":[5.0,5.0,5.0],
+                                  "tmdbId":[498713,33125,554600],
+                                  "genres":["[{'name':'War'},{'name':'History'}]","[{'name':'Action'},{'name':'History'},{'name:'War'}]","[{'name':'Action'},{'name':'Drama'},{'name':'War'}]"]
                                   })
-        new_list = pd.concat([new_movie,rcommended_list])
+        new_list = pd.concat([new_movie,recommended_list])
     #Teachers Day
     date_event=date_event.replace(month=9,day=5)
     if date_event == date_passed:
         new_movie = pd.DataFrame({"Title":["Super 30","Taare Zameen Par"],
                                   "Vote Average":[7.6,8.0],
                                   "TMDb Id":[534075,7508],
-                                  "Estimated Prediction":[5.0,5.0]
+                                  "Estimated Prediction":[5.0,5.0],
+                                  "tmdbId":[534075,7508],
+                                  "genres":["[{'name':'Drama'}]","[{'name':'Drama'}]"]
                                   })
         new_list = pd.concat([new_movie,recommended_list])
     #Children day
@@ -322,7 +297,9 @@ def special_date(recommended_list,date_passed):
         new_movie = pd.DataFrame({"Title":["Taare Zameen Par","Chillar Party"],
                                   "Vote Average":[8.0,6.9],
                                   "TMDb Id":[7508,69891],
-                                  "Estimated Prediction":[5.0,5.0]
+                                  "Estimated Prediction":[5.0,5.0],
+                                  "tmdbId":[7508,69891],
+                                  "genres":["[{'name':'Drama'}]","[{'name':'Drama'},{'name':'Comedy'},{'name':'Family'}]"]
                                   })
         new_list = pd.concat([new_movie,recommended_list])
     #Christmas
@@ -331,7 +308,9 @@ def special_date(recommended_list,date_passed):
         new_movie = pd.DataFrame({"Title":["Let It Snow","Home Alone"],
                                   "Vote Average":[6.1,7.3],
                                   "TMDb Id":[295151,771],
-                                  "Estimated Prediction":[5.0,5.0]
+                                  "Estimated Prediction":[5.0,5.0],
+                                  "tmdbId":[295151,771],
+                                  "genres":["[{'name':'Romance'},{'name':'Comedy'}]","[{'name':'Comedy'},{'name':'Family'}]"]
                                   })
         new_list = pd.concat([new_movie,recommended_list])
     #New Year
@@ -340,7 +319,9 @@ def special_date(recommended_list,date_passed):
         new_movie = pd.DataFrame({"Title":["New Years Eve"],
                                   "Vote Average":[5.9],
                                   "TMDb Id":[62838],
-                                  "Estimated Prediction":[5.0]
+                                  "Estimated Prediction":[5.0],
+                                  "tmdbId":[62838],
+                                  "genres":["[{'name':'Comedy'},{'name':'Romance'}]"]
                                   })
         new_list = pd.concat([new_movie,recommended_list])
     date_event=date_event.replace(month=1,day=1)
@@ -348,7 +329,9 @@ def special_date(recommended_list,date_passed):
         new_movie = pd.DataFrame({"Title":["New Years Eve"],
                                   "Vote Average":[5.9],
                                   "TMDb Id":[62838],
-                                  "Estimated Prediction":[5.0]
+                                  "Estimated Prediction":[5.0],
+                                  "tmdbId":[62838],
+                                  "genres":["[{'name':'Comedy'},{'name':'Romance'}]"]
                                   })
         new_list = pd.concat([new_movie,recommended_list])
     #Valentine
@@ -357,14 +340,16 @@ def special_date(recommended_list,date_passed):
         new_movie = pd.DataFrame({"Title":["The Notebook","Titanic"],
                                   "Vote Average":[7.9,7.9],
                                   "TMDb Id":[11036,597],
-                                  "Estimated Prediction":[5.0,5.0]
+                                  "Estimated Prediction":[5.0,5.0],
+                                  "tmdbId":[11036,597],
+                                  "genres":["[{'name':'Romance'},{'name':'Drama'}]","[{'name':'Drama'},{'name':'Romance'}]"]
                                   })
         new_list = pd.concat([new_movie,recommended_list])
     
     return new_list
 
 
-# In[25]:
+# In[ ]:
 
 
 def recommendation_updater(recommended_list,genre_score):
@@ -386,21 +371,31 @@ def recommendation_updater(recommended_list,genre_score):
     return new_list
 
 
-# In[26]:
+# In[ ]:
+
 
 
 def contextual_update(list_passed,family=False,device="Mobile",no_of_people=1,date_passed=datetime.now().date()) :
     # categories we have romance,action,comedy,drama ,crime and thriller ,documentary,sci-fi
     recommended_list=list_passed.copy()
-    print("reached contextual_update  - ")
+    print("Before Context-Awareness based changes - ")
     print(list_passed)
+
+    # Adding Genres for update
+    recommended_list = pd.merge(recommended_list,meta[['tmdbId','genres']],left_on=['TMDb Id'],right_on=['tmdbId']).dropna()
+
+    # Special Days
+    test_date=datetime.now().date()
+    test_date=test_date.replace(month=8,day=15)
+    recommended_list=special_date(recommended_list,test_date)
+    recommended_list.reset_index(drop=True,inplace=True)
+
+    # Reducing score to take account for contextual_update
+
     effect_rate = 0.75
     category=4
     recommended_list['Estimated Prediction']=recommended_list['Estimated Prediction']-effect_rate
-    #adding genre to recommended list
-    recommended_list = pd.merge(recommended_list,meta[['tmdbId','genres']],left_on=['TMDb Id'],right_on=['tmdbId']).dropna()
-    
-    #print(type(recommended_list['genres']))
+
 
     # Timing based
 
@@ -498,34 +493,23 @@ def contextual_update(list_passed,family=False,device="Mobile",no_of_people=1,da
         'Romance':0.33*(effect_rate/category),'Action':0.63*(effect_rate/category),'Comedy':0.54*(effect_rate/category),'Drama':0.33*(effect_rate/category),'Crime':0.61*(effect_rate/category)
         ,'Thriller':0.61*(effect_rate/category),'Documentary':0.17*(effect_rate/category),'Science Fiction':0.54*(effect_rate/category)
         }
-            
+
         recommended_list=recommendation_updater(recommended_list,scores)
 
     # removing genre from table
 
     recommended_list.drop(['tmdbId','genres'],axis=1,inplace=True)
 
-    # Special Days
-    test_date=datetime.now().date()
-    test_date=test_date.replace(month=8,day=15)
-    recommended_list=special_date(recommended_list,test_date)
-
-
-
     # Sorting the list for final result and comparing
     #print(list_passed)
     recommended_list.sort_values(by='Estimated Prediction',ascending=False,inplace=True)
     print(recommended_list)
-    return recommended_list
 
 contextual_update(result)
 
 
 # In[ ]:
 
-
-import pickle
-pickle.dump(svd,open("movie_ml_model.sav","wb"))
 
 
 # In[ ]:

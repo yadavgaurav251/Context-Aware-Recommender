@@ -51,7 +51,6 @@ meta = meta.drop([19730, 29503, 35587])
 
 meta['id'] = pd.to_numeric(meta['id'])
 
-
 # In[10]:
 
 
@@ -70,7 +69,6 @@ meta.rename(columns={'id': 'tmdbId'}, inplace=True)
 meta = pd.merge(meta, links, on='tmdbId')
 meta.drop(['imdb_id'], axis=1, inplace=True)
 meta.head()
-
 
 # In[13]:
 
@@ -108,7 +106,6 @@ def recommend(title, cosine_sim=cosine_sim):
 
 
 # In[16]:
-
 
 
 # In[17]:
@@ -221,7 +218,10 @@ def special_date(recommended_list, date_passed):
         new_movie = pd.DataFrame({"Title": ["Border", "Uri:The Surgical Strike"],
                                   "Vote Average": [6.8, 7.1],
                                   "TMDb Id": [33125, 554600],
-                                  "Estimated Prediction": [4.8, 4.7]
+                                  "Estimated Prediction": [5.0, 5.0],
+                                  "tmdbId": [33125, 554600],
+                                  "genres": ["[{'name':'Action'},{'name':'History'},{'name':'War'}]",
+                                             "[{'name':'Action'},{'name':'Drama'},{'name':'War'}]"]
                                   })
         new_list = pd.concat([new_movie, recommended_list])
     # Repubic Day
@@ -230,7 +230,11 @@ def special_date(recommended_list, date_passed):
         new_movie = pd.DataFrame({"Title": ["Shaheed", "Border", "Uri:The Surgical Strike"],
                                   "Vote Average": [5.0, 6.8, 7.1],
                                   "TMDb Id": [498713, 33125, 554600],
-                                  "Estimated Prediction": [5.0, 5.0, 5.0]
+                                  "Estimated Prediction": [5.0, 5.0, 5.0],
+                                  "tmdbId": [498713, 33125, 554600],
+                                  "genres": ["[{'name':'War'},{'name':'History'}]",
+                                             "[{'name':'Action'},{'name':'History'},{'name:'War'}]",
+                                             "[{'name':'Action'},{'name':'Drama'},{'name':'War'}]"]
                                   })
         new_list = pd.concat([new_movie, recommended_list])
     # Teachers Day
@@ -239,7 +243,9 @@ def special_date(recommended_list, date_passed):
         new_movie = pd.DataFrame({"Title": ["Super 30", "Taare Zameen Par"],
                                   "Vote Average": [7.6, 8.0],
                                   "TMDb Id": [534075, 7508],
-                                  "Estimated Prediction": [5.0, 5.0]
+                                  "Estimated Prediction": [5.0, 5.0],
+                                  "tmdbId": [534075, 7508],
+                                  "genres": ["[{'name':'Drama'}]", "[{'name':'Drama'}]"]
                                   })
         new_list = pd.concat([new_movie, recommended_list])
     # Children day
@@ -248,7 +254,10 @@ def special_date(recommended_list, date_passed):
         new_movie = pd.DataFrame({"Title": ["Taare Zameen Par", "Chillar Party"],
                                   "Vote Average": [8.0, 6.9],
                                   "TMDb Id": [7508, 69891],
-                                  "Estimated Prediction": [5.0, 5.0]
+                                  "Estimated Prediction": [5.0, 5.0],
+                                  "tmdbId": [7508, 69891],
+                                  "genres": ["[{'name':'Drama'}]",
+                                             "[{'name':'Drama'},{'name':'Comedy'},{'name':'Family'}]"]
                                   })
         new_list = pd.concat([new_movie, recommended_list])
     # Christmas
@@ -257,7 +266,10 @@ def special_date(recommended_list, date_passed):
         new_movie = pd.DataFrame({"Title": ["Let It Snow", "Home Alone"],
                                   "Vote Average": [6.1, 7.3],
                                   "TMDb Id": [295151, 771],
-                                  "Estimated Prediction": [5.0, 5.0]
+                                  "Estimated Prediction": [5.0, 5.0],
+                                  "tmdbId": [295151, 771],
+                                  "genres": ["[{'name':'Romance'},{'name':'Comedy'}]",
+                                             "[{'name':'Comedy'},{'name':'Family'}]"]
                                   })
         new_list = pd.concat([new_movie, recommended_list])
     # New Year
@@ -266,7 +278,9 @@ def special_date(recommended_list, date_passed):
         new_movie = pd.DataFrame({"Title": ["New Years Eve"],
                                   "Vote Average": [5.9],
                                   "TMDb Id": [62838],
-                                  "Estimated Prediction": [5.0]
+                                  "Estimated Prediction": [5.0],
+                                  "tmdbId": [62838],
+                                  "genres": ["[{'name':'Comedy'},{'name':'Romance'}]"]
                                   })
         new_list = pd.concat([new_movie, recommended_list])
     date_event = date_event.replace(month=1, day=1)
@@ -274,7 +288,9 @@ def special_date(recommended_list, date_passed):
         new_movie = pd.DataFrame({"Title": ["New Years Eve"],
                                   "Vote Average": [5.9],
                                   "TMDb Id": [62838],
-                                  "Estimated Prediction": [5.0]
+                                  "Estimated Prediction": [5.0],
+                                  "tmdbId": [62838],
+                                  "genres": ["[{'name':'Comedy'},{'name':'Romance'}]"]
                                   })
         new_list = pd.concat([new_movie, recommended_list])
     # Valentine
@@ -283,7 +299,10 @@ def special_date(recommended_list, date_passed):
         new_movie = pd.DataFrame({"Title": ["The Notebook", "Titanic"],
                                   "Vote Average": [7.9, 7.9],
                                   "TMDb Id": [11036, 597],
-                                  "Estimated Prediction": [5.0, 5.0]
+                                  "Estimated Prediction": [5.0, 5.0],
+                                  "tmdbId": [11036, 597],
+                                  "genres": ["[{'name':'Romance'},{'name':'Drama'}]",
+                                             "[{'name':'Drama'},{'name':'Romance'}]"]
                                   })
         new_list = pd.concat([new_movie, recommended_list])
 
@@ -315,19 +334,28 @@ def recommendation_updater(recommended_list, genre_score):
 # In[26]:
 
 
-def contextual_update(list_passed, family=False, device="Mobile", no_of_people=1, date_passed=datetime.now().date()):
+def contextual_update(list_passed, family=False, device="Mobile", no_of_people=1, date_passed=15,
+                      month_passed=8):
     # categories we have romance,action,comedy,drama ,crime and thriller ,documentary,sci-fi
     recommended_list = list_passed.copy()
-    print("reached contextual_update  - ")
+    print("Before Context-Awareness based changes - ")
     print(list_passed)
-    effect_rate = 0.75
-    category = 4
-    recommended_list['Estimated Prediction'] = recommended_list['Estimated Prediction'] - effect_rate
-    # adding genre to recommended list
+
+    # Adding Genres for update
     recommended_list = pd.merge(recommended_list, meta[['tmdbId', 'genres']], left_on=['TMDb Id'],
                                 right_on=['tmdbId']).dropna()
 
-    # print(type(recommended_list['genres']))
+    # Special Days
+    date_used = datetime.now().date()
+    date_used = date_used.replace(month=int(month_passed), day=int(date_passed))
+    recommended_list = special_date(recommended_list, date_used)
+    recommended_list.reset_index(drop=True, inplace=True)
+
+    # Reducing score to take account for contextual_update
+
+    effect_rate = 0.75
+    category = 4
+    recommended_list['Estimated Prediction'] = recommended_list['Estimated Prediction'] - effect_rate
 
     # Timing based
 
@@ -477,11 +505,6 @@ def contextual_update(list_passed, family=False, device="Mobile", no_of_people=1
 
     recommended_list.drop(['tmdbId', 'genres'], axis=1, inplace=True)
 
-    # Special Days
-    test_date = datetime.now().date()
-    test_date = test_date.replace(month=8, day=15)
-    recommended_list = special_date(recommended_list, test_date)
-
     # Sorting the list for final result and comparing
     # print(list_passed)
     recommended_list['Estimated Prediction'].clip(lower=0,upper =5,inplace=True)
@@ -521,7 +544,7 @@ def index(request):
             else:
                 family = False
             numberOfPeople = int(numberOfPeople)
-            movie_list = contextual_update(movie_list, family, device, numberOfPeople)
+            movie_list = contextual_update(movie_list, family, device, numberOfPeople,day,month)
 
         ## FIXING FORMAT FOR DISPLAY
         print(movie_list)
