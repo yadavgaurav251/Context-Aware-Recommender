@@ -504,7 +504,9 @@ def index(request):
         device = request.POST['device-type']
         mood = request.POST['mood']
         family = request.POST.getlist('family[]')
-        date = request.POST['date']
+        day = request.POST['day']
+        month = request.POST['month']
+        year = request.POST['year']
 
         movie_list = hybrid(userId, movie)
         print(type(family))
