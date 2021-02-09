@@ -7,7 +7,7 @@ On the Internet, where the number of choices is overwhelming, there is a need to
 
 The main motivation behind the project was to make a recommender system which is contextually aware since the context can massively change the result. While researching for the project we were not able to find any open sourced contextual recommender systems which only increased our fascination to implement one and the open-source it later.
 
-Context cannot be taken lightly for recommender system, for instance, think you visited a hotel during summers which had everything great but their Air Conditioners were not working then you will leave a bad rating for the place but if you had visited the same hotel during winters the AC wouldn’t have mattered a would have gotten a great rating. 
+Context cannot be taken lightly for recommender system, for instance, think you visited a hotel during summers which had everything great but their Air Conditioners were not working then you will leave a bad rating for the place but if you had visited the same hotel during winters the AC wouldn’t have mattered and you would have given them a great rating. 
 
 Netflix famously sponsored a competition, offering a grand prize of $1,000,000 to return recommendations that were 10% more accurate than those offered by the company's existing recommender system. Experts predict that Amazon approximately gets 25% of its sales through recommendations made to users and it is here we believe things like context-awareness would shine.  So to leave out context-awareness can be a massive mistake.
 
