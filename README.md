@@ -21,7 +21,7 @@ conda create --name recommender python=3.8
 conda activate recommender
 pip install -r requirements.txt
 ```
-### Django Serve
+### Django Server
 ```bash
 cd Context-Aware-Recommender/UI/
 python manage.py runserver
