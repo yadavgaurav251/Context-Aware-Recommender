@@ -49,6 +49,13 @@ Movie Recommendation on Independence Day -
 - [x] Django Based Interface
 - [x] Integrating Django and Recommender System 
 
+## 🛠&nbsp; Features To Implemented
+
+- [ ] Chrome Extension
+- [ ] Reinforcement Learning 
+- [ ] Mobile App
+- [ ] New Webapp Design
+
 ## 🤝&nbsp; Found a bug? Missing a specific feature?
 
 Feel free to **file a new issue** with a respective title and description on the [yadavgaurav251/Context-Aware-Recommender](https://github.com/yadavgaurav251/Context-Aware-Recommender) repository. If you already found a solution to your problem, **we would love to review your pull request**! 
